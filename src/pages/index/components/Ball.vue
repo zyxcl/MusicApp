@@ -88,7 +88,7 @@
     image {
       width: 80rpx;
       height: 80rpx;
-      // background: $primary-color;
+      background: $primary-color;
       border-radius: 50%;
     }
     .icon-name {
