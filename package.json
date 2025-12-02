@@ -41,7 +41,7 @@
     "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
     "type-check": "vue-tsc --noEmit",
-    "deploy": "gh-pages -d dist/build/h5"
+    "deploy": "npm run build:h5 && gh-pages -d dist/build/h5"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4020920240930001",
