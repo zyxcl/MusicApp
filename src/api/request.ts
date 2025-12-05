@@ -1,6 +1,6 @@
 
 const BaseURL = 'https://music.zyxcl.xyz'
-// const BaseURL = 'http://39.96.210.90:5001'
+// const BaseURL = 'http://localhost:3000'
 
 let loadingCount = 0
 
@@ -20,7 +20,7 @@ const hideLoading = () => {
 
 // 封装请求函数
 const request = ({ url, method = 'GET', data = {}, header = {} }) => {
-  showLoading()
+  // showLoading()
   return new Promise((resolve, reject) => {
     // const curCookie = uni.getStorageSync('curCookie') || ''
     // const cookieData = curCookie ? { cookie: curCookie } : {}
@@ -35,11 +35,11 @@ const request = ({ url, method = 'GET', data = {}, header = {} }) => {
       withCredentials: true, // 跨域请求携带 cookie
       success: res => {
         resolve(res.data)
-        hideLoading()
+        // hideLoading()
       },
       fail: err => {
         reject(err)
-        uni.hideLoading()
+        // uni.hideLoading()
       }
     })
   })

@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
   const getAccount = async () => {
     const res = await loginStatusApi()
     account.value = res.data.account
-    if (res.data.account) {
+    if (res.data.profile) {
       getUserDetail()
     }
   }
