@@ -1,1 +1,0 @@
-import{g as s,aq as a,o,c as t,w as e,p as n,i as l}from"./index-Dc4bbso7.js";const c=s({__name:"podcast",setup:s=>(a().then((s=>{console.log(s)})),(s,a)=>{const c=l;return o(),t(c,null,{default:e((()=>[n(" 播客 ")])),_:1})})});export{c as default};
