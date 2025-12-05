@@ -1,6 +1,6 @@
 
-const BaseURL = 'https://music.zyxcl.xyz'
-// const BaseURL = 'http://localhost:3000'
+// const BaseURL = 'https://music.zyxcl.xyz'
+const BaseURL = 'http://39.96.210.90:5001'
 
 let loadingCount = 0
 
@@ -22,13 +22,13 @@ const hideLoading = () => {
 const request = ({ url, method = 'GET', data = {}, header = {} }) => {
   // showLoading()
   return new Promise((resolve, reject) => {
-    // const curCookie = uni.getStorageSync('curCookie') || ''
-    // const cookieData = curCookie ? { cookie: curCookie } : {}
+    const curCookie = uni.getStorageSync('curCookie') || ''
+    const cookieData = curCookie ? { cookie: curCookie } : {}
     uni.request({
       url: BaseURL + url,
       method,
       data: {
-        // ...cookieData,
+        ...cookieData,
         ...data
       },
       header,
