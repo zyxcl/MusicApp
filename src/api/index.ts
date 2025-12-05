@@ -100,6 +100,7 @@ export const qrCheckApi = (key) => {
     url: `/login/qr/check?timestamp=${Date.now()}`,
     data: {
       key,
+      noCookie: true
     }
   })
 }
@@ -117,6 +118,7 @@ export const loginApi = ({ email, password }) => {
 // 登录状态
 export const loginStatusApi = () => {
   return request({
+    method: 'post',
     url: '/login/status',
   })
 }

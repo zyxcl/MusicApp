@@ -5,6 +5,7 @@ import request from './request'
 export const userDetailApi = (uid) => {
   return request({
     url: '/user/detail',
+    method: 'post',
     data: {
       uid
     }
@@ -14,6 +15,7 @@ export const userDetailApi = (uid) => {
 export const userPlaylistApi = (uid) => {
   return request({
     url: '/user/playlist',
+    method: 'post',
     data: {
       uid
     }
