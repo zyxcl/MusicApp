@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { qrKeyApi, qrCreateApi, qrCheckApi } from '@/api'
+import { qrKeyApi, qrCreateApi, qrCheckApi } from '@/api/user'
 import { ref, onBeforeUnmount } from 'vue'
 import { useUserStore } from '@/store/user'
 

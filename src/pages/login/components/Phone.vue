@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { captchaSentApi, captchaVerifyApi, loginCellphoneApi } from '@/api'
+import { captchaSentApi, captchaVerifyApi, loginCellphoneApi } from '@/api/user'
+
 import { ref, computed, onBeforeUnmount } from 'vue'
 import { useUserStore } from '@/store/user'
 
@@ -11,10 +12,10 @@ const captcha = ref('')
 const captchaText = computed(() => {
   return countDown.value === 0 ? '获取验证码' : `${countDown.value}s`
 })
-let timer = null
+let timer: NodeJS.Timeout | null = null
 const getCaptcha = async () => {
   const res = await captchaSentApi(phone.value)
-  console.log(res.data)
+
   countDown.value = 10
   timer = setInterval(() => {
     countDown.value --

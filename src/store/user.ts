@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginStatusApi } from '@/api'
+import { loginStatusApi } from '@/api/user'
 import { userDetailApi } from '@/api/user'
 
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { loginApi } from '@/api'
+  import { loginApi } from '@/api/user'
   import { ref } from 'vue'
   import { useUserStore } from '@/store/user'
   
