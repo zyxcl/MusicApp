@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import { songDetailApi, songUrlApi } from '@/api'
-
+import type { Song } from '@/types/api'
+import type { PlayableSong } from '@/types/store'
 
 export const useMusicStore = defineStore('music', () => {
   // 音频对象
   const audio = uni.createInnerAudioContext()
   // 当前播放列表
-  const playlist = ref([])
+  const playlist = ref<PlayableSong[]>([])
   // 当前播放歌曲下标
   const currentIndex = ref(0)
   // 当前播放位置
@@ -20,7 +21,7 @@ export const useMusicStore = defineStore('music', () => {
   const isRandom = ref(false)
   // 当前播放歌曲详情
   const curSongDetail = computed(() => {
-    if (playlist.value.length === 0) return {}
+    if (playlist.value.length === 0) return {} as Partial<PlayableSong>
     return {
       ...playlist.value[currentIndex.value],
       arStr: playlist.value[currentIndex.value].ar.map(v => v.name).join('/')
@@ -28,7 +29,7 @@ export const useMusicStore = defineStore('music', () => {
   })
   
   // 往播放列表添加一首歌
-  const addSong = async (song) => {
+  const addSong = async (song: Song): Promise<void> => {
     // 查找列表中是否存在此歌曲
     const index = playlist.value.findIndex(v => v.id === song.id)
     if (index > -1) {
@@ -36,24 +37,28 @@ export const useMusicStore = defineStore('music', () => {
     } else {
       // 获取这一首歌的url
       const musicRes = await songUrlApi(song.id)
-      song.url = musicRes.data[0].url
+      const playableSong: PlayableSong = {
+        ...song,
+        url: musicRes.data[0].url
+      }
       // 添加到播放列表
-      playlist.value.unshift(song)
+      playlist.value.unshift(playableSong)
       currentIndex.value = 0
     }
   }
   
   // 覆盖播放列表歌曲
-  const playAllSongs = async (ids) => {
-    ids = Array.isArray(ids) ? ids.join() : ids
+  const playAllSongs = async (ids: string | number | number[]): Promise<void> => {
+    const idString = Array.isArray(ids) ? ids.join(',') : String(ids)
     // 获取所有歌曲的详情
-    const res = await songDetailApi(ids)
+    const res = await songDetailApi(idString)
     // 获取所有歌曲的url
-    const musicRes = await songUrlApi(ids)
+    const musicRes = await songUrlApi(idString)
     playlist.value = res.songs.map(item => {
+      const urlData = musicRes.data.find(v => v.id === item.id)
       return {
         ...item,
-        url: musicRes.data.find(v => v.id === item.id).url
+        url: urlData?.url || ''
       }
     })
     currentIndex.value = 0
@@ -63,7 +68,7 @@ export const useMusicStore = defineStore('music', () => {
     audio.src = curSongDetail.value.url
   })
   // 播放
-  const play = () => {
+  const play = (): void => {
     if (audio.paused) {
       audio.play()
       isPlay.value = true
@@ -73,7 +78,7 @@ export const useMusicStore = defineStore('music', () => {
     }
   }
   // 切歌
-  const changeMusic = (index) => {
+  const changeMusic = (index: number): void => {
     // 是否随机播放
     if (isRandom.value) {
       currentIndex.value = Math.floor(Math.random() * playlist.value.length)
@@ -87,9 +92,9 @@ export const useMusicStore = defineStore('music', () => {
       }
     }
   }
-  
+
   // 修改播放位置
-  const changeCurrent = value => {
+  const changeCurrent = (value: number): void => {
     audio.seek(duration.value * (value / 100))
   }
   

@@ -1,15 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginStatusApi } from '@/api/user'
-import { userDetailApi } from '@/api/user'
-
-
+import { loginStatusApi, userDetailApi } from '@/api/user'
+import type { UserAccount, UserProfile } from '@/types/api'
 
 export const useUserStore = defineStore('user', () => {
-  const profile = ref(null)
-  const account = ref(null)
+  const profile = ref<UserProfile | null>(null)
+  const account = ref<UserAccount | null>(null)
   
-  const getUserDetail = async () => {
+  const getUserDetail = async (): Promise<void> => {
+    if (!account.value) return
+
     const res = await userDetailApi(account.value.id)
     profile.value = {
       ...res.profile,
@@ -18,12 +18,12 @@ export const useUserStore = defineStore('user', () => {
       createDays: res.createDays,
     }
   }
-  
-  const getAccount = async () => {
+
+  const getAccount = async (): Promise<void> => {
     const res = await loginStatusApi()
     account.value = res.data.account
     if (res.data.profile) {
-      getUserDetail()
+      await getUserDetail()
     }
   }
   

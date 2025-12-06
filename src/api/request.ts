@@ -1,3 +1,4 @@
+import type { AnyObject, RequestOptions } from '@/types/api'
 
 const BaseURL = 'https://music.zyxcl.xyz'
 // const BaseURL = 'http://39.96.210.90:5001'
@@ -17,15 +18,6 @@ const BaseURL = 'https://music.zyxcl.xyz'
 //     uni.hideLoading()
 //   }
 // }
-
-type AnyObject = Record<string, any>
-
-interface RequestOptions {
-  url: string
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
-  data?: AnyObject
-  header?: AnyObject
-}
 
 const request = <T>({ url, method = 'GET', data = {}, header = {} }: RequestOptions): Promise<T> => {
   return new Promise<T>((resolve, reject) => {
