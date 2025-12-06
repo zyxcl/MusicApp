@@ -4,25 +4,31 @@ import Qr from './components/Qr.vue'
 import Phone from './components/Phone.vue'
 import { ref } from 'vue'
 
-const loginType = ref('qr') // phone || email || qr
+const LoginType = {
+  PHONE: 'phone',
+  EMAIL: 'email',
+  QR: 'qr'
+} as const
+type Type = typeof LoginType[keyof typeof LoginType]
+const typeKey = ref<Type>(LoginType.QR)
 const typeArr = [
-  // { text: '手机号登录', type: 'phone' },
-  // { text: '邮箱登录', type: 'email' },
-  { text: '二维码登录', type: 'qr' }
+  { text: '手机号登录', type: LoginType.PHONE },
+  { text: '邮箱登录', type: LoginType.EMAIL },
+  { text: '二维码登录', type: LoginType.QR }
 ]
 </script>
 
 <template>
   <view class="login">
-    <Phone v-if="loginType === 'phone'" />
-    <Email v-else-if="loginType === 'email'" />
-    <Qr v-else />
+    <Phone v-if="typeKey === LoginType.PHONE" />
+    <Email v-else-if="typeKey ===  LoginType.EMAIL" />
+    <Qr v-else-if="typeKey === LoginType.QR" />
     <view class="change-type">
       <view
         v-for="item in typeArr"
         :key="item.type"
         class="link"
-        @click="loginType = item.type"
+        @click="typeKey = item.type"
       >
         {{ item.text }}
       </view>

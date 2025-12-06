@@ -8,8 +8,8 @@ const userStore = useUserStore()
 const unikey = ref('')
 const qrimg = ref('')
 const qrStatus = ref('')
-const qrCode = ref(null)
-let timer = null
+const qrCode = ref<number | null>(null)
+let timer: number | null = null
 
 const qrCheck = () => {
   timer = setInterval(async () => {
@@ -19,7 +19,7 @@ const qrCheck = () => {
     if (res.code === 800) {
       // 二维码过期，重新获取二维码
       qrStatus.value = '已过期，点击重新获取'
-      clearInterval(timer)
+      clearInterval(timer!)
     } else if (res.code === 801) {
       // 等待扫码
     } else if (res.code === 802) {
@@ -35,7 +35,7 @@ const qrCheck = () => {
         title: '登录成功',
         icon: 'success'
       })
-      clearInterval(timer)
+      clearInterval(timer!)
       setTimeout(() => {
         uni.switchTab({
           url: '/pages/index/index'
@@ -60,7 +60,7 @@ const getQr = async () => {
 getQr()
 
 onBeforeUnmount(() => {
-  clearInterval(timer)
+  clearInterval(timer!)
 })
 
 const resetQr = () => {
