@@ -65,7 +65,7 @@ export const useMusicStore = defineStore('music', () => {
   }
   // 当前歌曲内容切换时修改播放url
   watch(curSongDetail, () => {
-    audio.src = curSongDetail.value.url
+    audio.src = curSongDetail.value.url || ''
   })
   // 播放
   const play = (): void => {

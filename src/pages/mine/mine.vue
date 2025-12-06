@@ -3,10 +3,11 @@
 import { ref, watchEffect } from 'vue'
 import { useUserStore } from '@/store/user'
 import { userPlaylistApi } from '@/api/user'
+import type { Playlist } from '@/types/api'
 
 // 引入store
 const userStore = useUserStore()
-const playlist = ref([])
+const playlist = ref<Playlist[]>([])
 
 watchEffect(async () => {
   if (userStore.account?.id) {
@@ -15,7 +16,7 @@ watchEffect(async () => {
   }
 })
 
-const goList = id => {
+const goList = (id: number | string): void => {
   uni.navigateTo({
     url: `/pages/songlist/songlist?id=${id}`
   })

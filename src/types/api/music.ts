@@ -70,7 +70,6 @@ export interface LyricResponse extends ApiResponse {
     lyric: string
     version?: number
   }
-  code?: number
 }
 
 // 歌曲 URL 响应
@@ -94,7 +93,6 @@ export interface CommentResponse extends ApiResponse {
   hotComments?: Comment[]
   total: number
   more: boolean
-  code?: number
 }
 
 // 首页响应
@@ -111,7 +109,6 @@ export interface HomepageResponse extends ApiResponse {
 export interface TopPlaylistResponse extends ApiResponse {
   playlists: Playlist[]
   total: number
-  code: number
   more?: boolean
   cat?: string
 }
@@ -122,12 +119,10 @@ export interface RecommendSongsResponse extends ApiResponse {
     dailySongs: Song[]
     orderSongs?: Song[]
   }
-  code: number
 }
 
 // 语音列表响应（播客）
 export interface VoicelistResponse extends ApiResponse {
   data?: any
-  code?: number
   [key: string]: any
 }

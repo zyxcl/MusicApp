@@ -1,29 +1,40 @@
 <script lang="ts" setup>
-import { ref, watch, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useMusicStore } from '@/store/music'
 import { commentApi } from '@/api'
+import type { Comment } from '@/types/api'
 
 const musicStore = useMusicStore()
 
-const props = defineProps(['visible', 'type', 'id'])
-const emits = defineEmits(['update:visible'])
+interface Props {
+  visible: boolean
+  type: string | number
+  id: string | number
+}
 
-const popup = ref(null)
-const hotComments = ref([])
-const comments = ref([])
+interface Emits {
+  (event: 'update:visible', value: boolean): void
+}
+
+const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
+
+const popup = ref<any>(null)
+const hotComments = ref<Comment[]>([])
+const comments = ref<Comment[]>([])
 
 watchEffect(async () => {
   if (props.visible) {
     popup.value?.open()
     const res = await commentApi(props.type, props.id)
-    comments.value = res.comments
-    hotComments.value = res.hotComments
+    comments.value = res.comments || []
+    hotComments.value = res.hotComments || []
   } else {
     popup.value?.close()
   }
 })
 
-const change = (e) => {
+const change = (e: { show: boolean }): void => {
   if (!e.show) {
     emits('update:visible', false)
   }

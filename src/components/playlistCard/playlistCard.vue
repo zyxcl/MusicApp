@@ -1,13 +1,22 @@
 <script lang="ts" setup>
-import { ref, watch, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useMusicStore } from '@/store/music'
+import type { Artist } from '@/types/api'
 
 const musicStore = useMusicStore()
 
-const props = defineProps(['visible'])
-const emits = defineEmits(['update:visible'])
+interface Props {
+  visible: boolean
+}
 
-const popup = ref(null)
+interface Emits {
+  (event: 'update:visible', value: boolean): void
+}
+
+const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
+
+const popup = ref<any>(null)
 
 watchEffect(() => {
   if (props.visible) {
@@ -17,13 +26,13 @@ watchEffect(() => {
   }
 })
 
-const change = (e) => {
+const change = (e: { show: boolean }): void => {
   if (!e.show) {
     emits('update:visible', false)
   }
 }
 
-const formatAr = (ar) => {
+const formatAr = (ar: Artist[]): string => {
   return ar.map(v => v.name).join('/')
 }
 </script>

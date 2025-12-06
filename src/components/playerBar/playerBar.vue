@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useMusicStore } from '@/store/music'
-const props = defineProps(['padding'])
+
+interface Props {
+  padding?: string | number
+}
+
+const props = defineProps<Props>()
 
 const musicStore = useMusicStore()
 const visible = ref(false)

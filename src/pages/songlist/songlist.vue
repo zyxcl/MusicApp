@@ -3,38 +3,39 @@
   import { onLoad } from '@dcloudio/uni-app'
   import { playlistDetailApi } from '@/api'
   import { useMusicStore } from '../../store/music'
-  
+  import type { Playlist, Song, Artist } from '@/types/api'
+
   const musicStore = useMusicStore()
-  
-  const playlist = ref({})
+
+  const playlist = ref<Partial<Playlist>>({})
   const showComment = ref(false)
-  const id = ref('')
-  
-  const getDetail = async (id) => {
-    const res = await playlistDetailApi(id)
+  const id = ref<string>('')
+
+  const getDetail = async (playlistId: string | number): Promise<void> => {
+    const res = await playlistDetailApi(playlistId)
     playlist.value = res.playlist
   }
-  
-  onLoad((options) => {
+
+  onLoad((options: any) => {
     id.value = options.id
     getDetail(options.id)
   })
   // 把点击的歌曲添加到播放列表
-  const goPlayer = item => {
+  const goPlayer = (item: Song): void => {
     musicStore.addSong(item)
     uni.navigateTo({
       url: `/pages/player/player`
     })
   }
   // 把当前所有歌曲添加到播放列表
-  const playAll = () => {
-    const ids = playlist.value.trackIds.map(v => v.id)
+  const playAll = (): void => {
+    const ids = playlist.value.trackIds?.map(v => v.id) || []
     musicStore.playAllSongs(ids)
     uni.navigateTo({
       url: `/pages/player/player`
     })
   }
-  const arStr = ar => {
+  const arStr = (ar: Artist[]): string => {
     return ar.map(v => v.name).join('/')
   }
 </script>

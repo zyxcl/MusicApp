@@ -4,6 +4,9 @@ import { onLoad } from '@dcloudio/uni-app'
 import { ref, computed, watch, watchEffect } from 'vue'
 import { useMusicStore } from '../../store/music'
 
+// 歌词行类型：[时间(秒), 歌词文本]
+type LyricLine = [number, string]
+
 // 获取sotre对象
 const musicStore = useMusicStore()
 // 展示播放列表组件
@@ -11,7 +14,7 @@ const showCard = ref(false)
 // 展示评论
 const showComment = ref(false)
 // 歌词
-const songLyric = ref([])
+const songLyric = ref<LyricLine[]>([])
 // 是否展示歌词
 const showLyric = ref(false)
 // 歌词高亮位置
@@ -20,20 +23,22 @@ const lyricActiveIndex = ref(0)
 // 监听播放位置改变
 watch(() => musicStore.currentTime, () => {
   songLyric.value.forEach((item, index) => {
-    if (musicStore.currentTime >= item[0] && musicStore.currentTime < songLyric.value[index + 1][0]) {
+    if (musicStore.currentTime >= item[0] && musicStore.currentTime < songLyric.value[index + 1]?.[0]) {
       lyricActiveIndex.value = index
     }
   })
 })
 
 // 获取歌词
-const getLyric = async () => {
+const getLyric = async (): Promise<void> => {
+  if (!musicStore.curSongDetail.id) return
+
   const res = await lyricApi(musicStore.curSongDetail.id)
-  const lyric = res.lrc.lyric.split(/\n/).map(item => {
+  const lyric: LyricLine[] = res.lrc.lyric.split(/\n/).map(item => {
     let [time, text] = item.split(']')
     let [m, s] = time.slice(1).split(':')
-    time = m * 60 + s * 1
-    return [time, text]
+    const timeInSeconds = Number(m) * 60 + Number(s)
+    return [timeInSeconds, text]
   })
   songLyric.value = lyric
 }
@@ -62,10 +67,10 @@ const playBtnSrc = computed(() => {
 })
 
 // 格式化播放时间
-const addZero = n => n >= 10 ? n : '0' + n
-const formatTime = (time) => {
+const addZero = (n: number): string => n >= 10 ? String(n) : '0' + n
+const formatTime = (time: number): string => {
   const m = Math.floor(time / 60)
-  const s = addZero(parseInt(time % 60))
+  const s = addZero(parseInt(String(time % 60)))
   return `${m}:${s}`
 }
 </script>
@@ -104,7 +109,7 @@ const formatTime = (time) => {
         </view>
         <slider
           :value="musicStore.currentTime / musicStore.duration * 100"
-          @change="e => musicStore.changeCurrent(e.detail.value)"
+          @change="(e: any) => musicStore.changeCurrent(e.detail.value)"
           activeColor="#10AEFF"
           backgroundColor="#ffffff"
           block-color="#ffffff"

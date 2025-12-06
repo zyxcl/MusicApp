@@ -1,19 +1,26 @@
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { searchSuggestApi, searchApi } from '@/api'
+import type { Song } from '@/types/api'
 import Hot from './components/hot.vue'
 import _ from 'lodash'
 
+// 搜索建议项类型
+interface SearchSuggestItem {
+  keyword: string
+  [key: string]: any
+}
+
 const searchValue = ref('') // 搜索框内容
-const searchHistory = ref(uni.getStorageSync('searchHistory') || []) // 搜索历史记录
+const searchHistory = ref<string[]>(uni.getStorageSync('searchHistory') || []) // 搜索历史记录
 const showSuggest = ref(false) // 显示搜索建议
-const suggestList = ref([]) // 搜索建议列表
+const suggestList = ref<SearchSuggestItem[]>([]) // 搜索建议列表
 const showResult = ref(false) // 显示搜索结果
-const resultList = ref([]) // 搜索结果
+const resultList = ref<Song[]>([]) // 搜索结果
 
 
-const startSuggest = async () => {
+const startSuggest = async (): Promise<void> => {
   const res = await searchSuggestApi(searchValue.value)
   suggestList.value = res.result.allMatch
   console.log('触发搜索建议');
@@ -22,8 +29,8 @@ const startSuggest = async () => {
 const debounceSuggest = _.debounce(startSuggest, 1000)
 
 // 添加防抖： 连续多次调用同一个函数，只执行最后一次
-let timer = null
-const input = async (val) => {
+let timer: ReturnType<typeof setTimeout> | null = null
+const input = async (val: string): Promise<void> => {
   if (val.length > 0) {
     showSuggest.value = true
     showResult.value = false
@@ -36,21 +43,21 @@ const input = async (val) => {
     // }, 1000)
   }
 }
-const cancel = () => {
+const cancel = (): void => {
   showSuggest.value = false
   showResult.value = false
   resultList.value = []
   suggestList.value = []
 }
-const search = async () => {
+const search = async (): Promise<void> => {
   console.log('确定搜索', searchValue.value)
   showSuggest.value = false
   showResult.value = true
-  
+
   const res = await searchApi(searchValue.value)
   console.log(res);
   resultList.value = res.result.songs
-  
+
   // 添加搜索历史
   const index = searchHistory.value.indexOf(searchValue.value)
   if (index > -1) {
@@ -59,17 +66,17 @@ const search = async () => {
   searchHistory.value.unshift(searchValue.value)
   uni.setStorageSync('searchHistory', searchHistory.value)
 }
-const clearHistory = () => {
+const clearHistory = (): void => {
   searchHistory.value = []
   uni.setStorageSync('searchHistory', searchHistory.value)
 }
-const startSearch = keyword => {
+const startSearch = (keyword: string): void => {
   searchValue.value = keyword
   setTimeout(() => {
     search()
   })
 }
-const goPlay = id => {
+const goPlay = (id: number | string): void => {
   uni.navigateTo({
     url: `/pages/player/player?id=${id}`
   })
