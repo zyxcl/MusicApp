@@ -59,8 +59,20 @@ src/
 ├── api/                    # API 接口层
 │   ├── request.ts         # HTTP 请求封装 (基于 uni.request)
 │   ├── index.ts           # 内容相关 API (音乐、歌单、搜索等)
-│   ├── user.ts            # 用户相关 API (登录、验证码、用户信息)
-│   └── typing.d.ts        # API 类型定义
+│   └── user.ts            # 用户相关 API (登录、验证码、用户信息)
+│
+├── types/                  # TypeScript 类型定义
+│   ├── api/               # API 相关类型
+│   │   ├── index.ts       # 类型导出入口
+│   │   ├── common.ts      # 通用类型
+│   │   ├── music.ts       # 音乐相关类型
+│   │   └── user.ts        # 用户相关类型
+│   ├── store/             # Store 相关类型
+│   │   ├── index.ts       # Store 类型导出
+│   │   ├── music.ts       # 音乐 Store 类型
+│   │   └── user.ts        # 用户 Store 类型
+│   ├── index.ts           # 全局类型导出
+│   └── utils.ts           # 工具类型
 │
 ├── store/                  # Pinia 状态管理
 │   ├── user.ts            # 用户状态 (账号信息、个人资料)
@@ -92,10 +104,31 @@ src/
 ### 1. API 请求层 (`/src/api/`)
 
 **请求封装** (`request.ts`):
-- 基础 URL: `https://music.zyxcl.xyz`
-- 自动管理 Cookie: 从 `uni.getStorageSync('curCookie')` 获取并注入所有请求
-- 支持泛型: `get<T>()` 和 `post<T>()` 确保类型安全
-- 跨域支持: `withCredentials: true`
+- **环境变量支持**: 基础 URL 通过 `VITE_API_BASE_URL` 环境变量配置，默认 `https://music.zyxcl.xyz`
+- **Cookie 缓存机制**: 5秒缓存，减少同步 storage 读取，提升性能
+- **统一错误处理**: HTTP 状态码映射、网络错误、超时错误的友好提示
+- **请求拦截器**: 开发环境自动打印请求/响应日志
+- **Loading 管理**: 支持可选的全局 loading 状态（防止重复显示）
+- **超时配置**: 默认 10 秒请求超时
+- **类型安全**: 泛型支持 `get<T>()`、`post<T>()`、`put<T>()`、`del<T>()`
+- **跨域支持**: `withCredentials: true`
+
+**请求方法**:
+```typescript
+// 基础用法
+await get<BannerResponse>('/banner')
+
+// 带 loading
+await get<BannerResponse>('/banner', {}, {}, true)
+
+// 自定义 header
+await post<LoginResponse>('/login', data, { 'Custom-Header': 'value' })
+
+// 更新 Cookie 后清除缓存
+import { clearCookieCache } from '@/api/request'
+uni.setStorageSync('curCookie', newCookie)
+clearCookieCache()  // 确保下次请求使用新 Cookie
+```
 
 **API 分类**:
 - `index.ts`: 音乐内容 API (首页、歌单、搜索、歌曲详情、歌词、评论等)

@@ -19,7 +19,7 @@ import type {
 
 // 首页
 export const homepageApi = () => {
-  return get<HomepageResponse>('/homepage/block/page')
+  return get<HomepageResponse>('/homepage/block/page', {}, {}, true)
 }
 
 // 轮播图
