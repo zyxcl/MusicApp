@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-  const navIcons = [
+  interface NavIcon {
+    id: number
+    name: string
+    iconUrl: string
+    url: string
+  }
+
+  const navIcons: NavIcon[] = [
     {
       "id": -1,
       "name": "每日推荐",
@@ -55,13 +62,14 @@
       "url": ""
     }
   ]
-  const link = (url) => {
+
+  const link = (url: string): void => {
     if (!url) return
     uni.navigateTo({
       url
     })
   }
-  
+
 </script>
 
 <template>

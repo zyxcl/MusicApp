@@ -1,11 +1,26 @@
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref } from 'vue'
 import { searchHotApi } from '@/api'
 
-const props = defineProps(['historyList'])
-const emits = defineEmits(['clearHistory', 'startSearch'])
-const hotList = ref([])
+interface HotSearchItem {
+  searchWord: string
+  iconUrl?: string
+  [key: string]: any
+}
+
+interface Props {
+  historyList: string[]
+}
+
+interface Emits {
+  (event: 'clearHistory'): void
+  (event: 'startSearch', keyword: string): void
+}
+
+const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
+const hotList = ref<HotSearchItem[]>([])
 
 searchHotApi().then(res => {
   hotList.value = res.data
@@ -31,7 +46,7 @@ searchHotApi().then(res => {
       />
     </view>
   </uni-section>
-  
+
   <uni-section title="热门搜索" type="line" padding>
     <view
       class="hot-item"

@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { toplistApi } from '@/api'
+import type { Playlist } from '@/types/api'
 
-const toplist = ref([])
-const otherlist = ref([])
+const toplist = ref<Playlist[]>([])
+const otherlist = ref<Playlist[]>([])
 
 toplistApi().then(res => {
-  toplist.value = res.list.filter(v => v.tracks.length > 0)
-  otherlist.value = res.list.filter(v => v.tracks.length === 0)
+  toplist.value = res.list.filter(v => v.tracks && v.tracks.length > 0)
+  otherlist.value = res.list.filter(v => !v.tracks || v.tracks.length === 0)
 })
 
-const goDetail = id => {
+const goDetail = (id: number | string): void => {
   uni.navigateTo({
     url: `/pages/songlist/songlist?id=${id}`
   })

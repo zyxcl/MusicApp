@@ -12,20 +12,20 @@ const captcha = ref('')
 const captchaText = computed(() => {
   return countDown.value === 0 ? '获取验证码' : `${countDown.value}s`
 })
-let timer: NodeJS.Timeout | null = null
-const getCaptcha = async () => {
+let timer: ReturnType<typeof setInterval> | null = null
+const getCaptcha = async (): Promise<void> => {
   const res = await captchaSentApi(phone.value)
 
   countDown.value = 10
   timer = setInterval(() => {
     countDown.value --
     if (countDown.value <= 0) {
-      clearInterval(timer)
+      if (timer) clearInterval(timer)
     }
   }, 1000)
 }
 
-const submit = async () => {
+const submit = async (): Promise<void> => {
   try {
     await captchaVerifyApi({ phone: phone.value, captcha: captcha.value })
     const res = await loginCellphoneApi({ phone: phone.value, captcha: captcha.value })
@@ -54,7 +54,7 @@ const submit = async () => {
 }
 
 onBeforeUnmount(() => {
-  clearInterval(timer)
+  if (timer) clearInterval(timer)
 })
 </script>
 

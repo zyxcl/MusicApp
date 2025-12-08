@@ -9,9 +9,9 @@ const unikey = ref('')
 const qrimg = ref('')
 const qrStatus = ref('')
 const qrCode = ref<number | null>(null)
-let timer: number | null = null
+let timer: ReturnType<typeof setInterval> | null = null
 
-const qrCheck = () => {
+const qrCheck = (): void => {
   timer = setInterval(async () => {
     const res = await qrCheckApi(unikey.value)
     console.log(res)
@@ -45,7 +45,7 @@ const qrCheck = () => {
   }, 2000)
 }
 
-const getQr = async () => {
+const getQr = async (): Promise<void> => {
   // 获取key
   const keyRes = await qrKeyApi()
   console.log(keyRes.data);
@@ -60,10 +60,10 @@ const getQr = async () => {
 getQr()
 
 onBeforeUnmount(() => {
-  clearInterval(timer!)
+  if (timer) clearInterval(timer)
 })
 
-const resetQr = () => {
+const resetQr = (): void => {
   if (qrCode.value === 800) {
     qrCode.value = null
     getQr()

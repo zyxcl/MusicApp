@@ -1,6 +1,14 @@
 <script lang="ts" setup>
-  const props = defineProps(['list', 'title'])
-  const goDetail = id => {
+  import type { Creative } from '@/types/api'
+
+  interface Props {
+    list: Creative[]
+    title: string
+  }
+
+  const props = defineProps<Props>()
+
+  const goDetail = (id: number | string): void => {
     uni.navigateTo({
       url: `/pages/songlist/songlist?id=${id}`
     })

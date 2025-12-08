@@ -2,32 +2,33 @@
   import { ref } from 'vue'
   import { recommendSongsApi } from '../../api'
   import { useMusicStore } from '../../store/music'
-  
+  import type { Song, Artist } from '@/types/api'
+
   const musicStore = useMusicStore()
-  
-  const playlist = ref({})
-   
+
+  const playlist = ref<Song[]>([])
+
   recommendSongsApi().then(res => {
     console.log(res.data.dailySongs)
     playlist.value = res.data.dailySongs
   })
-  
+
   // 把点击的歌曲添加到播放列表
-  const goPlayer = item => {
+  const goPlayer = (item: Song): void => {
     musicStore.addSong(item)
     uni.navigateTo({
       url: `/pages/player/player`
     })
   }
   // 把当前所有歌曲添加到播放列表
-  const playAll = () => {
+  const playAll = (): void => {
     const ids = playlist.value.map(v => v.id)
     musicStore.playAllSongs(ids)
     uni.navigateTo({
       url: `/pages/player/player`
     })
   }
-  const arStr = ar => {
+  const arStr = (ar: Artist[]): string => {
     return ar.map(v => v.name).join('/')
   }
 </script>

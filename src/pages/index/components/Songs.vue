@@ -1,20 +1,28 @@
 <script lang="ts" setup>
   import { useMusicStore } from '@/store/music'
-import { computed } from 'vue';
+  import type { Creative, Artist } from '@/types/api'
+
+  interface Props {
+    list: Creative[]
+    title: string
+    ids: (number | string)[]
+  }
+
   const musicStore = useMusicStore()
-  
-  const props = defineProps(['list', 'title', 'ids'])
+  const props = defineProps<Props>()
 
   // 把当前所有歌曲添加到播放列表
-  const playAll = async (id) => {
-    const index = props.ids.indexOf(id)
+  const playAll = async (id: number | string): Promise<void> => {
+    const index = props.ids.indexOf(Number(id))
     await musicStore.playAllSongs(props.ids)
     musicStore.currentIndex = index
   }
-  const formatAr = (ar) => {
+
+  const formatAr = (ar: Artist[]): string => {
     return ar.map(v => v.name).join('/')
   }
-  const cutIcon = (id) => {
+
+  const cutIcon = (id: number | string): { type: string; color?: string } => {
     if (musicStore.curSongDetail.id === Number(id)) {
       return {
         type: 'bofangzhong',
@@ -37,7 +45,7 @@ import { computed } from 'vue';
             v-for="song in item.resources"
             :key="song.resourceId"
             :title="song.uiElement.mainTitle.title"
-            :note="formatAr(song.resourceExtInfo.artists)"
+            :note="formatAr(song.resourceExtInfo.artists || [])"
             :avatar="song.uiElement.image.imageUrl"
             clickable
             ellipsis="1"

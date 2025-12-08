@@ -2,11 +2,19 @@
 import { ref, watchEffect } from 'vue'
 import { useUserStore } from '@/store/user'
 
+interface Props {
+  visible: boolean
+}
+
+interface Emits {
+  (event: 'update:visible', value: boolean): void
+}
+
 // 引入store
 const userStore = useUserStore()
-const props = defineProps(['visible'])
-const emits = defineEmits(['update:visible'])
-const userDrawer = ref(null)
+const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
+const userDrawer = ref<any>(null)
 
 watchEffect(() => {
   if (props.visible) {
@@ -17,12 +25,13 @@ watchEffect(() => {
   }
 })
 
-const change = (e) => {
+const change = (e: any): void => {
   if (!e) {
     emits('update:visible', false)
   }
 }
-const onClick = () => {
+
+const onClick = (): void => {
   uni.switchTab({
     url: '/pages/mine/mine'
   })
